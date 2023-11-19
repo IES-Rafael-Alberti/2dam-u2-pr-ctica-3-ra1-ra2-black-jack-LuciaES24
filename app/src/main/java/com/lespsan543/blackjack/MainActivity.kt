@@ -44,9 +44,22 @@ class MainActivity : ComponentActivity() {
                                 backStackEntry.arguments?.getString("nombreJugador1") ?: ""
                             )
                         }
-                        composable(Routes.PantallaJugador1.route){ PantallaJugador1(navController) }
-                        composable(Routes.PantallaJugador2.route){ PantallaJugador2(navController) }
-
+                        composable(Routes.PantallaJugador1.route,
+                            arguments = listOf(navArgument("nombreJugadores"){ type=
+                                NavType.StringType})
+                        ){backStackEntry ->
+                            PantallaJugador1(navController,
+                                backStackEntry.arguments?.getString("nombreJugadores") ?: ""
+                            )
+                        }
+                        composable(Routes.PantallaJugador2.route,
+                            arguments = listOf(navArgument("nombreJugadores"){ type=
+                                NavType.StringType})
+                        ){backStackEntry ->
+                            PantallaJugador2(navController,
+                                backStackEntry.arguments?.getString("nombreJugadores") ?: ""
+                            )
+                        }
 
                     }
                 }

@@ -2,7 +2,7 @@ package com.lespsan543.blackjack.Clases
 
 import com.lespsan543.cartas.Clases.Carta
 
-class Jugador {
+class Jugador(val nombre:String) {
     var cartas = mutableListOf<Carta>()
 
     var plantarse = false

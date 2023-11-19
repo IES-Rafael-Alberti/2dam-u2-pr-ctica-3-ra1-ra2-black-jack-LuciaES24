@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,8 +28,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.lespsan543.cartas.Clases.Baraja
 import com.lespsan543.cartas.Clases.Carta
+import com.lespsan543.navegacin.Model.Routes
 
 @Preview(showBackground = true)
 @Composable
@@ -38,6 +42,47 @@ fun Inicio(){
     PantallaCartas(carta = carta,
         onChange = { carta = Baraja.dameCarta()}
     )
+}
+
+@Composable
+fun PantallaPrincipal(navController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(20, 102, 11)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(onClick = {  },
+            modifier = Modifier
+                .height(80.dp)
+                .width(200.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = CutCornerShape(10.dp)
+        ) {
+            Text(text = "Un jugador", fontSize = 22.sp)
+        }
+        Spacer(modifier = Modifier.height(100.dp))
+        Button(onClick = { navController.navigate(Routes.PedirJugador1.route) },
+            modifier = Modifier
+                .height(80.dp)
+                .width(200.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = CutCornerShape(10.dp)
+        ) {
+            Text(text = "Dos jugadores", fontSize = 22.sp)
+        }
+    }
+}
+
+@Composable
+fun Pantalla1Jugador(navController: NavHostController){
+
 }
 
 @Composable

@@ -1,13 +1,17 @@
 package com.lespsan543.navegacin.Model
 
 sealed class Routes(val route:String) {
-    object Pantalla1 : Routes("pantalla1")
-    object Pantalla2 : Routes("pantalla2")
-    object Pantalla3 : Routes("pantalla3")
-    object Pantalla4 : Routes("pantalla4/{edad}"){
-        fun createRoute(edad:Int) = "pantalla4/$edad"
+    object PantallaInicio : Routes("PantallaInicio")
+    object Pantalla1Jugador : Routes("Pantalla1Jugador")
+
+    object PedirJugador1 : Routes("PedirJugador1")
+    object PedirJugador2 : Routes("PedirJugador2/{nombreJugador1}"){
+        fun createRoute(nombreJugador1:String) = "PedirJugador2/$nombreJugador1"
     }
-    object Pantalla5 : Routes("pantalla5/{name}"){
-        fun createRoute(name:String) = "pantalla5/$name"
+    object PantallaJugador1 : Routes("PantallaJugador1/{nombreJugadores}"){
+        fun createRoute(nombreJugadores:String) = "PantallaJugador1/$nombreJugadores"
+    }
+    object PantallaJugador2 : Routes("PantallaJugador2"){
+        fun createRoute(nombreJugadores:String) = "PantallaJugador2/$nombreJugadores"
     }
 }

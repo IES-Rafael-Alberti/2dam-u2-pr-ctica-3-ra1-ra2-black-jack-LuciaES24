@@ -12,8 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.lespsan543.blackjack.Screens.PantallaJugador1
-import com.lespsan543.blackjack.Screens.PantallaJugador2
+import com.lespsan543.blackjack.Screens.PantallaMultiJugador
 import com.lespsan543.blackjack.Screens.PedirJugador1
 import com.lespsan543.blackjack.Screens.PedirJugador2
 import com.lespsan543.blackjack.ui.theme.BlackJackTheme
@@ -44,23 +43,14 @@ class MainActivity : ComponentActivity() {
                                 backStackEntry.arguments?.getString("nombreJugador1") ?: ""
                             )
                         }
-                        composable(Routes.PantallaJugador1.route,
+                        composable(Routes.PantallaMultiJugador.route,
                             arguments = listOf(navArgument("nombreJugadores"){ type=
                                 NavType.StringType})
                         ){backStackEntry ->
-                            PantallaJugador1(navController,
+                            PantallaMultiJugador(navController,
                                 backStackEntry.arguments?.getString("nombreJugadores") ?: ""
                             )
                         }
-                        composable(Routes.PantallaJugador2.route,
-                            arguments = listOf(navArgument("nombreJugadores"){ type=
-                                NavType.StringType})
-                        ){backStackEntry ->
-                            PantallaJugador2(navController,
-                                backStackEntry.arguments?.getString("nombreJugadores") ?: ""
-                            )
-                        }
-
                     }
                 }
             }

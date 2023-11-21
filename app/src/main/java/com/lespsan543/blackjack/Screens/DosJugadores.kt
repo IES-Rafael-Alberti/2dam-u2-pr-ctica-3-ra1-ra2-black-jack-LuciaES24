@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
@@ -30,15 +31,42 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.lespsan543.blackjack.Clases.Jugador
 import com.lespsan543.blackjack.R
+import com.lespsan543.cartas.Clases.Baraja
+import com.lespsan543.cartas.Screens.GenerarCartas
 import com.lespsan543.cartas.Screens.recuperarId
 import com.lespsan543.navegacin.Model.Routes
 
+@Composable
+fun Multiplayer(navController: NavHostController){
+    var pantallaMultiPlayer by rememberSaveable { mutableStateOf("PedirJugador1") }
+
+    var jugador1 by rememberSaveable { mutableStateOf(Jugador("",0)) }
+    var jugador2 by rememberSaveable { mutableStateOf(Jugador("",0)) }
+
+    if (pantallaMultiPlayer == "PedirJugador1"){
+        PedirJugador1(jugador1 = jugador1,
+            pantalla = pantallaMultiPlayer,
+            changeScreen = {pantallaMultiPlayer = "PedirJugador2"})
+    }else if (pantallaMultiPlayer == "PedirJugador2"){
+        PedirJugador2(jugador2 = jugador2,
+            pantalla = pantallaMultiPlayer,
+            changeScreen = {pantallaMultiPlayer = "Jugador1"})
+    }else if (pantallaMultiPlayer == "Jugador1"){
+
+    }else if (pantallaMultiPlayer == "Jugador2"){
+
+    }
+
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PedirJugador1(navController: NavHostController){
+fun PedirJugador1(jugador1 : Jugador,
+                  pantalla : String,
+                  changeScreen : (String) -> Unit){
     var nombreJugador1 by rememberSaveable { mutableStateOf("") }
     var fichas by rememberSaveable { mutableStateOf(0) }
-    var jugadores by rememberSaveable { mutableStateOf(mutableListOf<Jugador>()) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,8 +111,9 @@ fun PedirJugador1(navController: NavHostController){
                 }
             }
         }
-        Button(onClick = { jugadores.add(Jugador(nombreJugador1,fichas))
-            navController.navigate(Routes.PedirJugador2.createRoute(jugadores)) },
+        Button(onClick = { jugador1.nombre = nombreJugador1
+                         jugador1.fichas = fichas
+                         changeScreen(pantalla)},
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp),
@@ -101,7 +130,9 @@ fun PedirJugador1(navController: NavHostController){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PedirJugador2(navController: NavHostController, jugadores:MutableList<Jugador>){
+fun PedirJugador2(jugador2:Jugador,
+                  pantalla : String,
+                  changeScreen : (String) -> Unit){
     var fichas by rememberSaveable { mutableStateOf(0) }
     var nombreJugador2 by rememberSaveable { mutableStateOf("") }
     Column(
@@ -148,8 +179,8 @@ fun PedirJugador2(navController: NavHostController, jugadores:MutableList<Jugado
                 }
             }
         }
-        Button(onClick = { jugadores.add(Jugador(nombreJugador2,fichas))
-            navController.navigate(Routes.PantallaMultiJugador.createRoute(jugadores)) },
+        Button(onClick = { jugador2.nombre = nombreJugador2
+                         jugador2.fichas = fichas},
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp),
@@ -165,7 +196,44 @@ fun PedirJugador2(navController: NavHostController, jugadores:MutableList<Jugado
 }
 
 @Composable
-fun PantallaMultiJugador(navController: NavHostController, jugadores:MutableList<Jugador>){
-    val jugador1 by rememberSaveable { mutableStateOf(jugadores[0]) }
-    val jugador2 by rememberSaveable { mutableStateOf(jugadores[1]) }
+fun Jugador1(jugador: Jugador,
+             changeScreen : (String) -> Unit){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(20, 102, 11)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Row {
+            GenerarCartas(jugador = jugador)
+        }
+        Row(Modifier.padding(top = 24.dp)) {
+            Button(onClick = { },
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(150.dp)
+                    .padding(end = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black),
+                border = BorderStroke(2.dp, Color.Black),
+                shape = CutCornerShape(10.dp)
+            ) {
+                Text(text = "Dame carta")
+            }
+            Button(onClick = { Baraja.crearBaraja()},
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(150.dp)
+                    .padding(start = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black),
+                border = BorderStroke(2.dp, Color.Black),
+                shape = CutCornerShape(10.dp)
+            ) {
+                Text(text = "Reiniciar")
+            }
+        }
+    }
 }

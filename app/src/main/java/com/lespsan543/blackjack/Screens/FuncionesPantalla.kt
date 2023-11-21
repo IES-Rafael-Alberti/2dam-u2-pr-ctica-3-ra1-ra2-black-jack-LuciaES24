@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.lespsan543.blackjack.Clases.Jugador
 import com.lespsan543.cartas.Clases.Baraja
 import com.lespsan543.cartas.Clases.Carta
 import com.lespsan543.navegacin.Model.Routes
@@ -65,7 +66,7 @@ fun PantallaPrincipal(navController: NavHostController) {
             Text(text = "Un jugador", fontSize = 22.sp)
         }
         Spacer(modifier = Modifier.height(100.dp))
-        Button(onClick = { navController.navigate(Routes.PedirJugador1.route) },
+        Button(onClick = { navController.navigate(Routes.Multiplayer.route) },
             modifier = Modifier
                 .height(80.dp)
                 .width(200.dp),
@@ -78,11 +79,6 @@ fun PantallaPrincipal(navController: NavHostController) {
             Text(text = "Dos jugadores", fontSize = 22.sp)
         }
     }
-}
-
-@Composable
-fun Pantalla1Jugador(navController: NavHostController){
-
 }
 
 @Composable
@@ -126,6 +122,14 @@ fun PantallaCartas(
                 Text(text = "Reiniciar")
             }
         }
+    }
+}
+
+@Composable
+fun GenerarCartas(jugador: Jugador){
+    for (carta in jugador.cartas){
+        Image(painter = painterResource(id = recuperarId(carta)),
+            contentDescription = "Carta")
     }
 }
 

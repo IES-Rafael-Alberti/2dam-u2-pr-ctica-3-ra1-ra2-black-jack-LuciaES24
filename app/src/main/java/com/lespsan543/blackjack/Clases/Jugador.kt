@@ -2,7 +2,7 @@ package com.lespsan543.blackjack.Clases
 
 import com.lespsan543.cartas.Clases.Carta
 
-class Jugador(val nombre:String, val fichas:Int) {
+class Jugador(var nombre:String, var fichas:Int) {
     var cartas = mutableListOf<Carta>()
 
     var plantarse = false
@@ -18,13 +18,14 @@ class Jugador(val nombre:String, val fichas:Int) {
         }
 
         var contador = 0
-        if (contaAs != 0 && contaPuntos<=10){
-            while (contador != contaAs){
+        while (contador!=contaAs) {
+            if (contaPuntos <= 11) {
                 contador++
-                contaPuntos-=1
-                contaPuntos+=11
+                contaPuntos -= 1
+                contaPuntos += 11
+            }else{
+                break
             }
-
         }
         return contaPuntos
     }

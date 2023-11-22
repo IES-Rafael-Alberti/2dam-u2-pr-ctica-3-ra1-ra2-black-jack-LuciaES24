@@ -76,7 +76,7 @@ fun PantallaPrincipal(navController: NavHostController) {
             border = BorderStroke(2.dp, Color.Black),
             shape = CutCornerShape(10.dp)
         ) {
-            Text(text = "Dos jugadores", fontSize = 22.sp)
+            Text(text = "Dos jugadores", fontSize = 21.sp)
         }
     }
 }

@@ -129,7 +129,11 @@ fun PantallaCartas(
 fun GenerarCartas(jugador: Jugador){
     for (carta in jugador.cartas){
         Image(painter = painterResource(id = recuperarId(carta)),
-            contentDescription = "Carta")
+            contentDescription = "Carta",
+            modifier = Modifier
+                .height(30.dp)
+                .width(15.dp)
+        )
     }
 }
 

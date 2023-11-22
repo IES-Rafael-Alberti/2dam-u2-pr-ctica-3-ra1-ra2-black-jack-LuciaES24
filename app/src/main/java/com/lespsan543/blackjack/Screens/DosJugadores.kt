@@ -246,7 +246,8 @@ fun Jugador1(jugador: Jugador,
         Row {
             GenerarCartas(jugador = jugador)
         }
-        Row(Modifier.padding(top = 24.dp)) {
+        Spacer(modifier = Modifier.height(20.dp))
+        Row {
             Button(onClick = { var cartaNueva = Baraja.dameCarta()
                              jugador.cartas.add(cartaNueva)},
                 modifier = Modifier

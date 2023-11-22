@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lespsan543.blackjack.Screens.Multiplayer
 import com.lespsan543.blackjack.ui.theme.BlackJackTheme
+import com.lespsan543.cartas.Clases.Baraja
 import com.lespsan543.cartas.Screens.PantallaPrincipal
 import com.lespsan543.navegacin.Model.Routes
 
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    Baraja.crearBaraja()
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = Routes.PantallaInicio.route){
                         composable(Routes.PantallaInicio.route){ PantallaPrincipal(navController) }

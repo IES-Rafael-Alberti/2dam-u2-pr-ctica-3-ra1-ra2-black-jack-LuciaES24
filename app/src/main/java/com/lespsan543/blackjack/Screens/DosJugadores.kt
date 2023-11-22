@@ -240,6 +240,7 @@ fun Jugador1(jugador: Jugador,
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Turno de ${jugador.nombre}", color = Color.White, fontSize = 23.sp)
         Image(painter = painterResource(id = R.drawable.abajo0),
             contentDescription = "Carta")
         Spacer(modifier = Modifier.height(20.dp))

@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,9 +17,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,8 +43,8 @@ import com.lespsan543.navegacin.Model.Routes
 fun Multiplayer(navController: NavHostController){
     var pantallaMultiPlayer by rememberSaveable { mutableStateOf("PedirJugador1") }
 
-    var jugador1 by rememberSaveable { mutableStateOf(Jugador("",0)) }
-    var jugador2 by rememberSaveable { mutableStateOf(Jugador("",0)) }
+    var jugador1 by remember { mutableStateOf(Jugador("",0)) }
+    var jugador2 by remember { mutableStateOf(Jugador("",0)) }
 
     if (pantallaMultiPlayer == "PedirJugador1"){
         PedirJugador1(jugador1 = jugador1,
@@ -52,6 +55,9 @@ fun Multiplayer(navController: NavHostController){
             pantalla = pantallaMultiPlayer,
             changeScreen = {pantallaMultiPlayer = "Jugador1"})
     }else if (pantallaMultiPlayer == "Jugador1"){
+        Jugador1(jugador = jugador1,
+            screen = pantallaMultiPlayer,
+            changeScreen = {pantallaMultiPlayer = "Jugador2"})
 
     }else if (pantallaMultiPlayer == "Jugador2"){
 
@@ -73,19 +79,32 @@ fun PedirJugador1(jugador1 : Jugador,
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Jugador 1",
+            fontSize = 28.sp,
+            color = Color.White,
+        )
+        Spacer(modifier = Modifier.height(50.dp))
         OutlinedTextField(
             value = nombreJugador1,
             onValueChange = {nombreJugador1=it},
-            label = { Text(text = "Introduzca el nombre del Jugador 1")}
+            label = { Text(text = "Nombre del Jugador 1", color = Color.White)},
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.White,
+                textColor = Color.White)
         )
-        Text(text = "Elija cuantas fichas quiere apostar")
+        Spacer(modifier = Modifier.height(23.dp))
+        Text(text = "Elija cuantas fichas quiere apostar", color = Color.White)
+        Spacer(modifier = Modifier.height(10.dp))
         Image(painter = painterResource(id = R.drawable.ficha),
             contentDescription = "Ficha")
+        Spacer(modifier = Modifier.height(18.dp))
         Row {
             for (i in 0..2){
                 Button(onClick = { fichas = i },
                     modifier = Modifier
-                        .height(30.dp)
+                        .height(40.dp)
                         .width(70.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
@@ -100,7 +119,7 @@ fun PedirJugador1(jugador1 : Jugador,
             for (i in 3..5){
                 Button(onClick = { fichas = i },
                     modifier = Modifier
-                        .height(30.dp)
+                        .height(40.dp)
                         .width(70.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
@@ -111,6 +130,7 @@ fun PedirJugador1(jugador1 : Jugador,
                 }
             }
         }
+        Spacer(modifier = Modifier.height(40.dp))
         Button(onClick = { jugador1.nombre = nombreJugador1
                          jugador1.fichas = fichas
                          changeScreen(pantalla)},
@@ -141,19 +161,32 @@ fun PedirJugador2(jugador2:Jugador,
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Jugador 2",
+            fontSize = 28.sp,
+            color = Color.White,
+        )
+        Spacer(modifier = Modifier.height(50.dp))
         OutlinedTextField(
             value = nombreJugador2,
             onValueChange = {nombreJugador2=it},
-            label = { Text(text = "Introduzca el nombre del Jugador 2")}
+            label = { Text(text = "Nombre del jugador 2", color = Color.White)},
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.White,
+                textColor = Color.White)
         )
-        Text(text = "Elija cuantas fichas quiere apostar")
+        Spacer(modifier = Modifier.height(23.dp))
+        Text(text = "Elija cuantas fichas quiere apostar", color = Color.White)
+        Spacer(modifier = Modifier.height(10.dp))
         Image(painter = painterResource(id = R.drawable.ficha),
             contentDescription = "Ficha")
+        Spacer(modifier = Modifier.height(18.dp))
         Row {
             for (i in 0..2){
                 Button(onClick = { fichas = i },
                     modifier = Modifier
-                        .height(30.dp)
+                        .height(40.dp)
                         .width(70.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
@@ -168,7 +201,7 @@ fun PedirJugador2(jugador2:Jugador,
             for (i in 3..5){
                 Button(onClick = { fichas = i },
                     modifier = Modifier
-                        .height(30.dp)
+                        .height(40.dp)
                         .width(70.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
@@ -179,8 +212,10 @@ fun PedirJugador2(jugador2:Jugador,
                 }
             }
         }
+        Spacer(modifier = Modifier.height(40.dp))
         Button(onClick = { jugador2.nombre = nombreJugador2
-                         jugador2.fichas = fichas},
+            jugador2.fichas = fichas
+            changeScreen(pantalla)},
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp),
@@ -190,13 +225,14 @@ fun PedirJugador2(jugador2:Jugador,
             border = BorderStroke(2.dp, Color.Black),
             shape = CutCornerShape(10.dp)
         ) {
-            Text(text = "Empezar partida", fontSize = 22.sp)
+            Text(text = "Siguiente", fontSize = 22.sp)
         }
     }
 }
 
 @Composable
 fun Jugador1(jugador: Jugador,
+             screen : String,
              changeScreen : (String) -> Unit){
     Column(
         modifier = Modifier
@@ -204,11 +240,15 @@ fun Jugador1(jugador: Jugador,
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(painter = painterResource(id = R.drawable.abajo0),
+            contentDescription = "Carta")
+        Spacer(modifier = Modifier.height(20.dp))
         Row {
             GenerarCartas(jugador = jugador)
         }
         Row(Modifier.padding(top = 24.dp)) {
-            Button(onClick = { },
+            Button(onClick = { var cartaNueva = Baraja.dameCarta()
+                             jugador.cartas.add(cartaNueva)},
                 modifier = Modifier
                     .height(50.dp)
                     .width(150.dp)

@@ -1,4 +1,4 @@
-package com.lespsan543.blackjack.Clases
+package com.lespsan543.blackjack.data
 
 import com.lespsan543.cartas.Clases.Carta
 

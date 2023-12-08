@@ -5,12 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,59 +23,69 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.lespsan543.blackjack.Clases.Jugador
 import com.lespsan543.blackjack.R
-import com.lespsan543.cartas.Clases.Baraja
-import com.lespsan543.cartas.Screens.GenerarCartas
-import com.lespsan543.cartas.Screens.recuperarId
-import com.lespsan543.navegacin.Model.Routes
+import com.lespsan543.cartas.Clases.Carta
+import com.lespsan543.cartas.Screens.recuperarImagenCarta
 
 @Composable
-fun Multiplayer(navController: NavHostController){
-    var pantallaMultiPlayer by rememberSaveable { mutableStateOf("PedirJugador1") }
+fun Multiplayer(navController: NavHostController, multiplayerViewModel: MultiplayerViewModel){
 
-    var jugador1 by remember { mutableStateOf(Jugador("",0)) }
-    var jugador2 by remember { mutableStateOf(Jugador("",0)) }
+    val pantallaActual: String by multiplayerViewModel.pantallaActual.observeAsState(initial = "PedirJugador1")
+    val pantallaAnterior: String by multiplayerViewModel.pantallaAnterior.observeAsState(initial = "PedirJugador1")
+    val actualizaCartas :Boolean by multiplayerViewModel.actualizaCartas.observeAsState(initial = false)
 
-    if (pantallaMultiPlayer == "PedirJugador1"){
-        PedirJugador1(jugador1 = jugador1,
-            pantalla = pantallaMultiPlayer,
-            changeScreen = {pantallaMultiPlayer = "PedirJugador2"})
-    }else if (pantallaMultiPlayer == "PedirJugador2"){
-        PedirJugador2(jugador2 = jugador2,
-            pantalla = pantallaMultiPlayer,
-            changeScreen = {pantallaMultiPlayer = "Jugador1"})
-    }else if (pantallaMultiPlayer == "Jugador1"){
-        Jugador1(jugador = jugador1,
-            screen = pantallaMultiPlayer,
-            changeScreen = {pantallaMultiPlayer = "Jugador2"})
 
-    }else if (pantallaMultiPlayer == "Jugador2"){
-
+    if (pantallaActual == "PedirJugador1"){
+        PedirJugador1(viewModel = multiplayerViewModel,
+            pantalla = pantallaActual
+        ) { multiplayerViewModel.cambiarPantalla("PedirJugador2") }
+        multiplayerViewModel.cambiarPantallaAnterior("PedirJugador1")
+    }else if (pantallaActual == "PedirJugador2"){
+        PedirJugador2(viewModel = multiplayerViewModel,
+            pantalla = pantallaActual,
+            changeScreen = {multiplayerViewModel.cambiarPantalla("Jugador1")})
+        multiplayerViewModel.cambiarPantallaAnterior("PedirJugador2")
+    }else if (pantallaActual == "Jugador1"){
+        Jugador(viewModel = multiplayerViewModel,
+            jugador = 1,
+            actualizaCartas = actualizaCartas,
+            screen = pantallaActual,
+            changeScreen = {multiplayerViewModel.cambiarPantalla("PantallaIntermedia")})
+        multiplayerViewModel.cambiarPantallaAnterior("Jugador1")
+    }else if (pantallaActual == "PantallaIntermedia"){
+        PantallaIntermedia(screen = pantallaActual, changeScreen = {
+            if (pantallaAnterior == "Jugador1"){
+                multiplayerViewModel.cambiarPantalla("Jugador2")
+            }else if (pantallaAnterior == "Jugador2"){
+                multiplayerViewModel.cambiarPantalla("Jugador1")
+            }
+            multiplayerViewModel.cambiarPantallaAnterior("PantallaIntermedia") })
+    }else if (pantallaActual == "Jugador2"){
+        Jugador(viewModel = multiplayerViewModel,
+            jugador = 2,
+            actualizaCartas = actualizaCartas,
+            screen = pantallaActual,
+            changeScreen = {multiplayerViewModel.cambiarPantalla("PantallaIntermedia")})
+        multiplayerViewModel.cambiarPantallaAnterior("Jugador2")
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PedirJugador1(jugador1 : Jugador,
-                  pantalla : String,
-                  changeScreen : (String) -> Unit){
-    var nombreJugador1 by rememberSaveable { mutableStateOf("") }
-    var fichas by rememberSaveable { mutableStateOf(0) }
+fun PedirJugador1(
+    viewModel: MultiplayerViewModel,
+    pantalla: String,
+    changeScreen: (String) -> Unit){
+    val nombreJugador1: String by viewModel.nombreJugador1.observeAsState(initial = "")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +100,7 @@ fun PedirJugador1(jugador1 : Jugador,
         Spacer(modifier = Modifier.height(50.dp))
         OutlinedTextField(
             value = nombreJugador1,
-            onValueChange = {nombreJugador1=it},
+            onValueChange = {viewModel.cambiandoNombre(1,it)},
             label = { Text(text = "Nombre del Jugador 1", color = Color.White)},
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.White,
@@ -101,8 +114,8 @@ fun PedirJugador1(jugador1 : Jugador,
             contentDescription = "Ficha")
         Spacer(modifier = Modifier.height(18.dp))
         Row {
-            for (i in 0..2){
-                Button(onClick = { fichas = i },
+            for (i in 1..3){
+                Button(onClick = { viewModel.cambiarFichasJugador(1,i) },
                     modifier = Modifier
                         .height(40.dp)
                         .width(70.dp),
@@ -116,8 +129,8 @@ fun PedirJugador1(jugador1 : Jugador,
             }
         }
         Row {
-            for (i in 3..5){
-                Button(onClick = { fichas = i },
+            for (i in 4..6){
+                Button(onClick = { viewModel.cambiarFichasJugador(1,i) },
                     modifier = Modifier
                         .height(40.dp)
                         .width(70.dp),
@@ -131,9 +144,8 @@ fun PedirJugador1(jugador1 : Jugador,
             }
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Button(onClick = { jugador1.nombre = nombreJugador1
-                         jugador1.fichas = fichas
-                         changeScreen(pantalla)},
+        Button(onClick = { viewModel.cambiarDatosJugador(1)
+                           changeScreen(pantalla) },
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp),
@@ -141,7 +153,8 @@ fun PedirJugador1(jugador1 : Jugador,
                 containerColor = Color.White,
                 contentColor = Color.Black),
             border = BorderStroke(2.dp, Color.Black),
-            shape = CutCornerShape(10.dp)
+            shape = CutCornerShape(10.dp),
+            enabled = nombreJugador1 != ""
         ) {
             Text(text = "Siguiente", fontSize = 22.sp)
         }
@@ -150,11 +163,10 @@ fun PedirJugador1(jugador1 : Jugador,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PedirJugador2(jugador2:Jugador,
+fun PedirJugador2(viewModel: MultiplayerViewModel,
                   pantalla : String,
                   changeScreen : (String) -> Unit){
-    var fichas by rememberSaveable { mutableStateOf(0) }
-    var nombreJugador2 by rememberSaveable { mutableStateOf("") }
+    val nombreJugador2 : String by viewModel.nombreJugador2.observeAsState(initial = "")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -169,7 +181,7 @@ fun PedirJugador2(jugador2:Jugador,
         Spacer(modifier = Modifier.height(50.dp))
         OutlinedTextField(
             value = nombreJugador2,
-            onValueChange = {nombreJugador2=it},
+            onValueChange = {viewModel.cambiandoNombre(2,it)},
             label = { Text(text = "Nombre del jugador 2", color = Color.White)},
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.White,
@@ -183,8 +195,8 @@ fun PedirJugador2(jugador2:Jugador,
             contentDescription = "Ficha")
         Spacer(modifier = Modifier.height(18.dp))
         Row {
-            for (i in 0..2){
-                Button(onClick = { fichas = i },
+            for (i in 1..3){
+                Button(onClick = { viewModel.cambiarFichasJugador(2,i) },
                     modifier = Modifier
                         .height(40.dp)
                         .width(70.dp),
@@ -198,8 +210,8 @@ fun PedirJugador2(jugador2:Jugador,
             }
         }
         Row {
-            for (i in 3..5){
-                Button(onClick = { fichas = i },
+            for (i in 4..6){
+                Button(onClick = { viewModel.cambiarFichasJugador(2,i) },
                     modifier = Modifier
                         .height(40.dp)
                         .width(70.dp),
@@ -213,9 +225,8 @@ fun PedirJugador2(jugador2:Jugador,
             }
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Button(onClick = { jugador2.nombre = nombreJugador2
-            jugador2.fichas = fichas
-            changeScreen(pantalla)},
+        Button(onClick = { viewModel.cambiarDatosJugador(2)
+                           changeScreen(pantalla)},
             modifier = Modifier
                 .height(50.dp)
                 .width(150.dp),
@@ -223,7 +234,8 @@ fun PedirJugador2(jugador2:Jugador,
                 containerColor = Color.White,
                 contentColor = Color.Black),
             border = BorderStroke(2.dp, Color.Black),
-            shape = CutCornerShape(10.dp)
+            shape = CutCornerShape(10.dp),
+            enabled = nombreJugador2 != ""
         ) {
             Text(text = "Siguiente", fontSize = 22.sp)
         }
@@ -231,26 +243,31 @@ fun PedirJugador2(jugador2:Jugador,
 }
 
 @Composable
-fun Jugador1(jugador: Jugador,
-             screen : String,
-             changeScreen : (String) -> Unit){
+fun Jugador(viewModel: MultiplayerViewModel,
+            actualizaCartas : Boolean,
+            jugador: Int,
+            screen : String,
+            changeScreen : (String) -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Turno de ${jugador.nombre}", color = Color.White, fontSize = 23.sp)
+        Text(text = "Turno de ${viewModel.getNombreJugador(jugador)}", color = Color.White, fontSize = 23.sp)
+        Spacer(modifier = Modifier.height(10.dp))
         Image(painter = painterResource(id = R.drawable.abajo0),
             contentDescription = "Carta")
         Spacer(modifier = Modifier.height(20.dp))
-        Row {
-            GenerarCartas(jugador = jugador)
+        LazyRow(verticalAlignment = Alignment.CenterVertically,
+            contentPadding = PaddingValues(0.dp)){
+            items(viewModel.getCartasJugador(jugador)){
+                ImagenCarta(carta = it)
+            }
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row {
-            Button(onClick = { var cartaNueva = Baraja.dameCarta()
-                             jugador.cartas.add(cartaNueva)},
+            Button(onClick = { viewModel.anadirCartaAJugador(jugador) },
                 modifier = Modifier
                     .height(50.dp)
                     .width(150.dp)
@@ -263,7 +280,7 @@ fun Jugador1(jugador: Jugador,
             ) {
                 Text(text = "Dame carta")
             }
-            Button(onClick = { Baraja.crearBaraja()},
+            Button(onClick = { viewModel.cambiarPlantarseJugador(jugador) },
                 modifier = Modifier
                     .height(50.dp)
                     .width(150.dp)
@@ -274,8 +291,63 @@ fun Jugador1(jugador: Jugador,
                 border = BorderStroke(2.dp, Color.Black),
                 shape = CutCornerShape(10.dp)
             ) {
-                Text(text = "Reiniciar")
+                Text(text = "Plantarse")
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { changeScreen(screen) },
+            modifier = Modifier
+                .height(40.dp)
+                .width(130.dp)
+                .align(Alignment.End),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = CutCornerShape(10.dp)
+        ) {
+            Text(text = "Siguiente")
+        }
     }
+}
+
+@Composable
+fun PantallaIntermedia(
+    screen : String,
+    changeScreen : (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(20, 102, 11)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Pasa el móvil al siguiente jugador",
+            fontSize = 28.sp,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { changeScreen(screen) },
+            modifier = Modifier
+                .height(50.dp)
+                .width(150.dp)
+                .padding(start = 5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = CutCornerShape(10.dp)
+        ) {
+            Text(text = "Siguiente", fontSize = 22.sp)
+        }
+    }
+}
+
+@Composable
+fun ImagenCarta(carta:Carta){
+    Image(
+        painter = painterResource(id = recuperarImagenCarta(carta = carta)),
+        contentDescription = "Carta")
 }

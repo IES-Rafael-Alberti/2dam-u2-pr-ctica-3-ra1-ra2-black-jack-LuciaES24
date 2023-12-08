@@ -1,4 +1,4 @@
-package com.lespsan543.navegacin.Model
+package com.lespsan543.blackjack.data
 
 
 sealed class Routes(val route:String) {

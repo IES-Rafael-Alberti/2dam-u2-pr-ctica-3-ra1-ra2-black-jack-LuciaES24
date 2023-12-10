@@ -1,6 +1,3 @@
-package com.lespsan543.cartas.Clases
-
-import android.util.Log
 
 class Baraja {
 

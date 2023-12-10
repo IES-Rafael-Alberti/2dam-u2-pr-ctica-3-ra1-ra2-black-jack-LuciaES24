@@ -1,5 +1,6 @@
 package com.lespsan543.blackjack.Screens
 
+import Carta
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,13 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.lespsan543.blackjack.R
-import com.lespsan543.cartas.Clases.Carta
-import com.lespsan543.cartas.Screens.recuperarImagenCarta
 
 @Composable
-fun Multiplayer(navController: NavHostController, multiplayerViewModel: MultiplayerViewModel){
+fun Multiplayer(multiplayerViewModel: MultiplayerViewModel){
 
     val pantallaActual: String by multiplayerViewModel.pantallaActual.observeAsState(initial = "PedirJugador1")
     val pantallaAnterior: String by multiplayerViewModel.pantallaAnterior.observeAsState(initial = "PedirJugador1")
@@ -255,17 +253,20 @@ fun Jugador(viewModel: MultiplayerViewModel,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Turno de ${viewModel.getNombreJugador(jugador)}", color = Color.White, fontSize = 23.sp)
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Image(painter = painterResource(id = R.drawable.abajo0),
             contentDescription = "Carta")
-        Spacer(modifier = Modifier.height(20.dp))
-        LazyRow(verticalAlignment = Alignment.CenterVertically,
-            contentPadding = PaddingValues(0.dp)){
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(text = "Puntos: ${viewModel.anadirCartaAJugador(jugador)}", color = Color.White, fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(5.dp))
+        LazyRow(horizontalArrangement = Arrangement.spacedBy((-75).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            contentPadding = PaddingValues(20.dp)){
             items(viewModel.getCartasJugador(jugador)){
                 ImagenCarta(carta = it)
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Row {
             Button(onClick = { viewModel.anadirCartaAJugador(jugador) },
                 modifier = Modifier
@@ -280,7 +281,8 @@ fun Jugador(viewModel: MultiplayerViewModel,
             ) {
                 Text(text = "Dame carta")
             }
-            Button(onClick = { viewModel.cambiarPlantarseJugador(jugador) },
+            Button(onClick = { viewModel.cambiarPlantarseJugador(jugador)
+                               changeScreen(screen)},
                 modifier = Modifier
                     .height(50.dp)
                     .width(150.dp)
@@ -294,7 +296,7 @@ fun Jugador(viewModel: MultiplayerViewModel,
                 Text(text = "Plantarse")
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         Button(onClick = { changeScreen(screen) },
             modifier = Modifier
                 .height(40.dp)
@@ -324,9 +326,8 @@ fun PantallaIntermedia(
     ) {
         Text(
             text = "Pasa el móvil al siguiente jugador",
-            fontSize = 28.sp,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            fontSize = 25.sp,
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = { changeScreen(screen) },

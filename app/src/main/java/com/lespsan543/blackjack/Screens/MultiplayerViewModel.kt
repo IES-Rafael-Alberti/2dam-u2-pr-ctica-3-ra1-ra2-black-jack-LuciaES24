@@ -1,11 +1,10 @@
 package com.lespsan543.blackjack.Screens
 
+import Carta
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lespsan543.blackjack.data.Jugador
-import com.lespsan543.cartas.Clases.Baraja
-import com.lespsan543.cartas.Clases.Carta
 
 class MultiplayerViewModel : ViewModel() {
     private val _pantallaAnterior = MutableLiveData<String>()
@@ -31,6 +30,9 @@ class MultiplayerViewModel : ViewModel() {
     private val _actualizaCartas = MutableLiveData<Boolean>()
     var actualizaCartas : LiveData<Boolean> = _actualizaCartas
 
+    private val _plantarseJ1 = MutableLiveData<Boolean>()
+
+    private val _plantarseJ2 = MutableLiveData<Boolean>()
 
     init {
         Baraja.crearBaraja()
@@ -51,7 +53,7 @@ class MultiplayerViewModel : ViewModel() {
     }
 
      private fun actualizarCartas(){
-        if (_actualizaCartas.value == null || _actualizaCartas.value == true){
+        if (_actualizaCartas == null || _actualizaCartas.value == true){
             _actualizaCartas.value = false
         }else if (_actualizaCartas.value == false){
             _actualizaCartas.value = true
@@ -101,8 +103,10 @@ class MultiplayerViewModel : ViewModel() {
     fun cambiarPlantarseJugador(jugador: Int){
         if (jugador == 1){
             _jugador1.value!!.plantarse = true
+            _plantarseJ1.value = true
         }else if (jugador == 2){
             _jugador2.value!!.plantarse = true
+            _plantarseJ2.value = true
         }
     }
 
@@ -110,12 +114,37 @@ class MultiplayerViewModel : ViewModel() {
         _pantallaAnterior.value = pantalla
     }
 
-    fun anadirCartaAJugador(jugador: Int){
+    fun anadirCartaAJugador(jugador: Int) : Int{
+        var puntos = 0
         if (jugador == 1){
             _jugador1.value!!.cartas.add(Baraja.dameCarta())
+            puntos = _jugador1.value!!.contarPuntos()
         }else if (jugador == 2){
             _jugador2.value!!.cartas.add(Baraja.dameCarta())
+            puntos = _jugador2.value!!.contarPuntos()
         }
         actualizarCartas()
+
+        if (puntos>=21 && _plantarseJ1.value != true){
+            _plantarseJ1.value = true
+        }else if (puntos >=21 && _plantarseJ2.value != true){
+            _plantarseJ2.value = true
+        }
+        return puntos
+    }
+
+    fun reset(){
+        _jugador1.value = Jugador("",0)
+        _jugador2.value = Jugador("",0)
+        _jugador1.value!!.cartas.clear()
+        _jugador2.value!!.cartas.clear()
+        _nombreJugador1.value = ""
+        _nombreJugador2.value = ""
+        _plantarseJ1.value = false
+        _plantarseJ2.value = false
+        _fichasJugador1.value = 0
+        _fichasJugador2.value = 0
+        _pantallaAnterior.value = "PedirJugador1"
+        _pantallaActual.value = "PedirJugador1"
     }
 }

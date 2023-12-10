@@ -1,4 +1,3 @@
-package com.lespsan543.cartas.Clases
 
 enum class Naipes(var valorMin : Int, var valorMax : Int) {
 

@@ -1,7 +1,6 @@
 package com.lespsan543.blackjack
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -15,8 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lespsan543.blackjack.Screens.Multiplayer
 import com.lespsan543.blackjack.Screens.MultiplayerViewModel
 import com.lespsan543.blackjack.ui.theme.BlackJackTheme
-import com.lespsan543.cartas.Clases.Baraja
-import com.lespsan543.cartas.Screens.PantallaPrincipal
+import com.lespsan543.blackjack.Screens.PantallaPrincipal
 import com.lespsan543.blackjack.data.Routes
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = Routes.PantallaInicio.route){
                         composable(Routes.PantallaInicio.route){ PantallaPrincipal(navController) }
-                        composable(Routes.Multiplayer.route){ Multiplayer(navController, multiplayerViewModel) }
+                        composable(Routes.Multiplayer.route){ Multiplayer(multiplayerViewModel) }
 
                     }
                 }

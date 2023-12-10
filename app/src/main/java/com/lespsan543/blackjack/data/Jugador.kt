@@ -1,6 +1,7 @@
 package com.lespsan543.blackjack.data
 
-import com.lespsan543.cartas.Clases.Carta
+import Carta
+
 
 class Jugador(var nombre:String, var fichas:Int) {
     var cartas = mutableListOf<Carta>()

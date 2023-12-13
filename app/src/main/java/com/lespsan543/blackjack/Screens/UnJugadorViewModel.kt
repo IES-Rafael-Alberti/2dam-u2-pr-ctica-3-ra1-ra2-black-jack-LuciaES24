@@ -64,12 +64,10 @@ class UnJugadorViewModel : ViewModel() {
 
     fun getJugadorGanador() : String{
         var ganador = ""
-        if (_jugador.value!!.contarPuntos()<=21 && _jugador.value!!.contarPuntos()>_jugador2.value!!.contarPuntos()){
-            ganador = "¡¡El ganador es ${_jugador1.value!!.nombre}!!"
-        }else if(_jugador2.value!!.contarPuntos()<=21){
-            ganador = "¡¡El ganador es ${_jugador2.value!!.nombre}!!"
-        }else if (_jugador1.value!!.contarPuntos()==_jugador2.value!!.contarPuntos()){
+        if (_jugador.value!!.contarPuntos()==21){
             ganador = "Empate"
+        }else if(_puntosMaquina<_jugador.value!!.contarPuntos() || _jugador.value!!.contarPuntos()<21 && _plantarse.value == true){
+            ganador = "¡¡Gana la máquina!!"
         }
         return ganador
     }

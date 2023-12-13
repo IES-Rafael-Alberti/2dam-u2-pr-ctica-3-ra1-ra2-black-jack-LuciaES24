@@ -15,10 +15,13 @@ import com.lespsan543.blackjack.Screens.Multiplayer
 import com.lespsan543.blackjack.Screens.MultiplayerViewModel
 import com.lespsan543.blackjack.ui.theme.BlackJackTheme
 import com.lespsan543.blackjack.Screens.PantallaPrincipal
+import com.lespsan543.blackjack.Screens.UnJugador
+import com.lespsan543.blackjack.Screens.UnJugadorViewModel
 import com.lespsan543.blackjack.data.Routes
 
 class MainActivity : ComponentActivity() {
     private val multiplayerViewModel : MultiplayerViewModel by viewModels()
+    private val unJugadorViewModel : UnJugadorViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,7 +34,8 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = Routes.PantallaInicio.route){
                         composable(Routes.PantallaInicio.route){ PantallaPrincipal(navController) }
-                        composable(Routes.Multiplayer.route){ Multiplayer(multiplayerViewModel) }
+                        composable(Routes.Multiplayer.route){ Multiplayer(navController,multiplayerViewModel) }
+                        composable(Routes.Pantalla1Jugador.route){ UnJugador(unJugadorViewModel) }
 
                     }
                 }

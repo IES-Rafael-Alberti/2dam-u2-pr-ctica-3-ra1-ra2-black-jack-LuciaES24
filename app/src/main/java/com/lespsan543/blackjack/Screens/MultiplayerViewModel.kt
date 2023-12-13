@@ -28,7 +28,7 @@ class MultiplayerViewModel : ViewModel() {
     private val _fichasJugador2 = MutableLiveData<Int>()
 
     private val _actualizaCartas = MutableLiveData<Boolean>()
-    var actualizaCartas : LiveData<Boolean> = _actualizaCartas
+    val actualizaCartas : LiveData<Boolean> = _actualizaCartas
 
     private val _plantarseJ1 = MutableLiveData<Boolean>()
 
@@ -53,7 +53,7 @@ class MultiplayerViewModel : ViewModel() {
     }
 
      private fun actualizarCartas(){
-        if (_actualizaCartas == null || _actualizaCartas.value == true){
+        if (_actualizaCartas.value == null || _actualizaCartas.value == true){
             _actualizaCartas.value = false
         }else if (_actualizaCartas.value == false){
             _actualizaCartas.value = true
@@ -104,10 +104,15 @@ class MultiplayerViewModel : ViewModel() {
         if (jugador == 1){
             _jugador1.value!!.plantarse = true
             _plantarseJ1.value = true
+            cambiarPantalla("Jugador2")
         }else if (jugador == 2){
             _jugador2.value!!.plantarse = true
             _plantarseJ2.value = true
+            cambiarPantalla("Jugador1")
         }
+
+        comprobarFinJuego()
+
     }
 
     fun cambiarPantallaAnterior(pantalla:String){
@@ -130,12 +135,35 @@ class MultiplayerViewModel : ViewModel() {
         }else if (puntos >=21 && _plantarseJ2.value != true){
             _plantarseJ2.value = true
         }
+
+        comprobarFinJuego()
+
         return puntos
     }
 
+    private fun comprobarFinJuego(){
+        if (_plantarseJ1.value == true && _plantarseJ2.value == true){
+            cambiarPantalla("PantallaFinal")
+        }
+    }
+
+    fun getJugadorGanador() : String{
+        var ganador = ""
+        if (_jugador1.value!!.contarPuntos()<=21 && _jugador1.value!!.contarPuntos()>_jugador2.value!!.contarPuntos()){
+            ganador = "¡¡El ganador es ${_jugador1.value!!.nombre}!!"
+        }else if(_jugador2.value!!.contarPuntos()<=21){
+            ganador = "¡¡El ganador es ${_jugador2.value!!.nombre}!!"
+        }else if (_jugador1.value!!.contarPuntos()==_jugador2.value!!.contarPuntos()){
+            ganador = "Empate"
+        }
+        return ganador
+    }
+
     fun reset(){
-        _jugador1.value = Jugador("",0)
-        _jugador2.value = Jugador("",0)
+        _jugador1.value!!.nombre = ""
+        _jugador2.value!!.nombre = ""
+        _jugador1.value!!.fichas = 0
+        _jugador2.value!!.fichas = 0
         _jugador1.value!!.cartas.clear()
         _jugador2.value!!.cartas.clear()
         _nombreJugador1.value = ""

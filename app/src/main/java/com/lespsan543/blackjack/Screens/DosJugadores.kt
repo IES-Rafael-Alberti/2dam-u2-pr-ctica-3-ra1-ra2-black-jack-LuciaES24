@@ -31,10 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.lespsan543.blackjack.R
+import com.lespsan543.blackjack.data.Routes
 
 @Composable
-fun Multiplayer(multiplayerViewModel: MultiplayerViewModel){
+fun Multiplayer(navController: NavHostController, multiplayerViewModel: MultiplayerViewModel){
 
     val pantallaActual: String by multiplayerViewModel.pantallaActual.observeAsState(initial = "PedirJugador1")
     val pantallaAnterior: String by multiplayerViewModel.pantallaAnterior.observeAsState(initial = "PedirJugador1")
@@ -73,6 +75,9 @@ fun Multiplayer(multiplayerViewModel: MultiplayerViewModel){
             screen = pantallaActual,
             changeScreen = {multiplayerViewModel.cambiarPantalla("PantallaIntermedia")})
         multiplayerViewModel.cambiarPantallaAnterior("Jugador2")
+    }else if (pantallaActual == "PantallaFinal"){
+        FinishGame(viewModel = multiplayerViewModel,
+            navController = navController)
     }
 }
 
@@ -317,7 +322,7 @@ fun Jugador(viewModel: MultiplayerViewModel,
 fun PantallaIntermedia(
     screen : String,
     changeScreen : (String) -> Unit) {
-    Column(
+    Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color(20, 102, 11)),
@@ -342,6 +347,43 @@ fun PantallaIntermedia(
             shape = CutCornerShape(10.dp)
         ) {
             Text(text = "Siguiente", fontSize = 22.sp)
+        }
+    }
+}
+
+@Composable
+fun FinishGame(viewModel: MultiplayerViewModel,
+               navController: NavHostController){
+    Column (modifier = Modifier
+        .fillMaxSize()
+        .background(Color(20, 102, 11)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally)
+    {
+        Image(
+            painter = painterResource(id = R.drawable.blackjack),
+            contentDescription = "BlackJack",
+            modifier = Modifier
+                .height(300.dp)
+                .width(600.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = viewModel.getJugadorGanador(),
+            fontSize = 30.sp,
+            color = Color.White)
+        Spacer(modifier = Modifier.height(40.dp))
+        Button(onClick = { navController.navigate(Routes.PantallaInicio.route)
+                           viewModel.reset() },
+            modifier = Modifier
+                .height(50.dp)
+                .width(150.dp)
+                .padding(start = 5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black),
+            border = BorderStroke(2.dp, Color.Black),
+            shape = CutCornerShape(10.dp)
+        ) {
+            Text(text = "Inicio", fontSize = 22.sp)
         }
     }
 }

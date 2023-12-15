@@ -35,8 +35,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = Routes.PantallaInicio.route){
                         composable(Routes.PantallaInicio.route){ PantallaPrincipal(navController) }
                         composable(Routes.Multiplayer.route){ Multiplayer(navController,multiplayerViewModel) }
-                        composable(Routes.Pantalla1Jugador.route){ UnJugador(unJugadorViewModel) }
-
+                        composable(Routes.Pantalla1Jugador.route){ UnJugador(navController,unJugadorViewModel) }
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.lespsan543.blackjack.Screens
 
 import Carta
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -32,7 +34,14 @@ fun PantallaPrincipal(navController: NavHostController) {
             .background(Color(20, 102, 11)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = {  },
+        Image(
+            painter = painterResource(id = R.drawable.blackjack),
+            contentDescription = "BlackJack",
+            modifier = Modifier
+                .height(300.dp)
+                .width(600.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { navController.navigate(Routes.Pantalla1Jugador.route) },
             modifier = Modifier
                 .height(80.dp)
                 .width(200.dp),

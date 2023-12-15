@@ -35,6 +35,11 @@ import androidx.navigation.NavHostController
 import com.lespsan543.blackjack.R
 import com.lespsan543.blackjack.data.Routes
 
+/**
+ * Función que controla el modo 2 jugadores
+ * @param navController para navegar entre pantallas
+ * @param multiplayerViewModel view model en el que manejamos todos los datos del programa
+ */
 @Composable
 fun Multiplayer(navController: NavHostController, multiplayerViewModel: MultiplayerViewModel){
 
@@ -42,7 +47,7 @@ fun Multiplayer(navController: NavHostController, multiplayerViewModel: Multipla
     val pantallaAnterior: String by multiplayerViewModel.pantallaAnterior.observeAsState(initial = "PedirJugador1")
     val actualizaCartas :Boolean by multiplayerViewModel.actualizaCartas.observeAsState(initial = false)
 
-
+    //Controlamos que pantalla debe mostrarse
     if (pantallaActual == "PedirJugador1"){
         PedirJugador1(viewModel = multiplayerViewModel,
             pantalla = pantallaActual
@@ -81,6 +86,12 @@ fun Multiplayer(navController: NavHostController, multiplayerViewModel: Multipla
     }
 }
 
+/**
+ * Muestra la pantalla que pide los datos del jugador 1
+ * @param viewModel view model en el que manejamos todos los datos del programa
+ * @param pantalla pantalla actual en la que se encuentra en programa
+ * @param changeScreen función que cambia a la nueva pantalla
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PedirJugador1(
@@ -164,6 +175,12 @@ fun PedirJugador1(
     }
 }
 
+/**
+ * Muestra la pantalla que pide los datos del jugador 2
+ * @param viewModel view model en el que manejamos todos los datos del programa
+ * @param pantalla pantalla actual en la que se encuentra en programa
+ * @param changeScreen función que cambia a la nueva pantalla
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PedirJugador2(viewModel: MultiplayerViewModel,
@@ -245,6 +262,14 @@ fun PedirJugador2(viewModel: MultiplayerViewModel,
     }
 }
 
+/**
+ * Muestra la pantalla de la ronda dependiendo del jugador
+ * @param viewModel view model en el que manejamos todos los datos del programa
+ * @param actualizaCartas booleano que se encarga de actualizar las cartas automáticamente en la pantalla
+ * @param jugador será 1 o 2 dependiendo del jugador al que le toque jugar
+ * @param screen pantalla actual en la que se encuentra en programa
+ * @param changeScreen función que cambia a la nueva pantalla
+ */
 @Composable
 fun Jugador(viewModel: MultiplayerViewModel,
             actualizaCartas : Boolean,
@@ -262,7 +287,7 @@ fun Jugador(viewModel: MultiplayerViewModel,
         Image(painter = painterResource(id = R.drawable.abajo0),
             contentDescription = "Carta")
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = "Puntos: ${viewModel.anadirCartaAJugador(jugador)}", color = Color.White, fontSize = 18.sp)
+        Text(text = "Puntos: ${viewModel.pJugadores(jugador)}", color = Color.White, fontSize = 18.sp)
         Spacer(modifier = Modifier.height(5.dp))
         LazyRow(horizontalArrangement = Arrangement.spacedBy((-75).dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -318,6 +343,11 @@ fun Jugador(viewModel: MultiplayerViewModel,
     }
 }
 
+/**
+ * Muestra una pantalla intermedia para que ambos jugadores no puedan ver los puntos del otro
+ * @param screen pantalla actual en la que se encuentra en programa
+ * @param changeScreen función que cambia a la nueva pantalla
+ */
 @Composable
 fun PantallaIntermedia(
     screen : String,
@@ -351,6 +381,11 @@ fun PantallaIntermedia(
     }
 }
 
+/**
+ * Muestra la pantalla de fin de juego con el ganador
+ * @param viewModel view model en el que manejamos todos los datos del programa
+ * @param navController para navegar entre pantallas
+ */
 @Composable
 fun FinishGame(viewModel: MultiplayerViewModel,
                navController: NavHostController){
@@ -360,17 +395,30 @@ fun FinishGame(viewModel: MultiplayerViewModel,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally)
     {
-        Image(
-            painter = painterResource(id = R.drawable.blackjack),
-            contentDescription = "BlackJack",
-            modifier = Modifier
-                .height(300.dp)
-                .width(600.dp))
-        Spacer(modifier = Modifier.height(20.dp))
         Text(text = viewModel.getJugadorGanador(),
-            fontSize = 30.sp,
+            fontSize = 40.sp,
             color = Color.White)
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = "Cartas de ${viewModel.getNombreJugador(1)} || Puntos: ${viewModel.pJugadores(1)}",
+            fontSize = 20.sp,
+            color = Color.White)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy((-75).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            contentPadding = PaddingValues(20.dp)){
+            items(viewModel.getCartasJugador(1)){
+                ImagenCarta(carta = it)
+            }
+        }
+        Text(text = "Cartas de ${viewModel.getNombreJugador(2)} || Puntos: ${viewModel.pJugadores(2)}",
+            fontSize = 20.sp,
+            color = Color.White)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy((-75).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            contentPadding = PaddingValues(20.dp)){
+            items(viewModel.getCartasJugador(2)){
+                ImagenCarta(carta = it)
+            }
+        }
         Button(onClick = { navController.navigate(Routes.PantallaInicio.route)
                            viewModel.reset() },
             modifier = Modifier
@@ -388,6 +436,10 @@ fun FinishGame(viewModel: MultiplayerViewModel,
     }
 }
 
+/**
+ * Genera la imagen de la carta de la que se recupere el identificador
+ * @param carta carta de la que vamos a obtener el identificador para mostrarla
+ */
 @Composable
 fun ImagenCarta(carta:Carta){
     Image(
